@@ -34,9 +34,9 @@ More details can be found inside variables/ssh_variables.sh
 
 #### Example CLI Snippet:
 
-`ssh_ec2 -i chatso-dev`
+`ssh_ec2 -i project-dev`
 
-This will connect to the chatso dev ec2 instance on aws using the private key found in keys/dev-chatso.pem
+This will connect to the project dev ec2 instance on aws using the private key found in keys/dev-project.pem
 
 
 
@@ -57,9 +57,9 @@ More details can be found inside variables/mongo_variables.sh
 
 #### Example CLI Snippet:
 
-`mongo_connect.sh chatso dev`
+`mongo_connect.sh project dev`
 
-This will connect to the dev database on the atlas mongo cluster for chatso.
+This will connect to the dev database on the atlas mongo cluster for project.
 
 
 
@@ -85,7 +85,7 @@ More details can be found inside variables/mongo_variables.sh
 
 #### Example CLI Snippet:
 
-`mongo_migrate_export.sh -p chatso -d dev -c all -v -y` 
+`mongo_migrate_export.sh -p project -d dev -c all -v -y` 
 
 This will export ~/Desktop/collections/dev/*.json for the dev database, show all logs ( verbosity ), and skip detail confirmation.
 
@@ -115,7 +115,7 @@ More details can be found inside variables/mongo_variables.sh
 
 #### Example CLI Snippet:
 
-`mongo_migrate_import.sh -p chatso -d dev -c users -t -v` 
+`mongo_migrate_import.sh -p project -d dev -c users -t -v` 
 
 This will import ~/Desktop/collections/dev/users.json into the dev database, and truncate existing records on the dev users collection.
 
@@ -143,6 +143,6 @@ More details can be found inside variables/mongo_variables.sh
 
 #### Example CLI Snippet:
 
-`mongo_migrate.sh -p chatso -f dev -d int -c users -t` 
+`mongo_migrate.sh -p project -f dev -d int -c users -t` 
 
 This will migrate dev users into integration users, and truncate existing records on the int users collection. 
