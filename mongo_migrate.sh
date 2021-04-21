@@ -1,6 +1,6 @@
 #!/usr/local/bin/bash
 
-source ~/scripts/variables/mongo_variables.sh
+source ./variables/mongo_variables.sh
 
 # Helper method that dispalys the usage of this script.
 mongo_migrate_usage() {

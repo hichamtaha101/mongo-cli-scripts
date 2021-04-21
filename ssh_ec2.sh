@@ -1,6 +1,6 @@
 #!/usr/local/bin/bash
 
-source ~/scripts/variables/ssh_variables.sh
+source ./variables/ssh_variables.sh
 
 function ssh_ec2_usage() {
 	echo "Usage: ${0}	[i:]
@@ -36,4 +36,4 @@ if [[ -z $ec2_instance ]] || [[ ! ${!ssh_keys[@]} =~ $ec2_instance ]]; then
 fi
 
 #SSH into the instance.
-ssh -i ~/Dropbox/keys/${ssh_keys[$ec2_instance]} ${ssh_user[$ec2_instance]}@${ssh_address[$ec2_instance]}
+ssh -i ./keys/${ssh_keys[$ec2_instance]} ${ssh_user[$ec2_instance]}@${ssh_address[$ec2_instance]}

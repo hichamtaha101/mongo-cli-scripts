@@ -1,6 +1,6 @@
 #!/usr/local/bin/bash
 
-source ~/scripts/variables/mongo_variables.sh
+source ./variables/mongo_variables.sh
 
 mongo_connect_usage() {
 	echo "Usage: ${0} PROJECT DATABASE
