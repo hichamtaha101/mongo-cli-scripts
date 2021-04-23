@@ -1,6 +1,7 @@
 # README #
 
 The following repository is meant to provide helpful CLI commands written for the bash shell.
+The following script is preferred for UNIX based environments. Untested on windows.
 
 ### How do I get set up? ###
 
@@ -77,11 +78,11 @@ More details can be found inside variables/mongo_variables.sh
 
 | Argument(s)             | alias         | Values(s)                                                         |
 |:------------------------|:--------------|:------------------------------------------------------------------|
-| project                | -p             | Specify which project this migration export is for.
-| database               | -d             | Specify which database to export ( dev, int, staging, or production ).
-| collections            | -c             | Specify comma delimited collections to export. Specify 'all' to export all collections.
-| verbose                | -v             | Enable verbosity for script.
-| skip_confirmation      | -y             | Skip detail confirmation prompt.
+| project                 | -p            | Specify which project this migration export is for.
+| database                | -d            | Specify which database to export ( dev, int, staging, or production ).
+| collections             | -c            | Specify comma delimited collections to export. Specify 'all' to export all collections.
+| verbose                 | -v            | Enable verbosity for script.
+| skip_confirmation       | -y            | Skip detail confirmation prompt.
 
 #### Example CLI Snippet:
 
@@ -95,9 +96,9 @@ This will export ~/Desktop/collections/dev/*.json for the dev database, show all
 --------------------------------------------
 #### mongo_migrate_import.sh
 
-Import full collections from a your local to a remote location.
+Import full collection(s) from one project's exported database(s) to another.
 
-Collections will be imported from `~/Desktop/collections/${project}/${database}/`.
+Collections will be imported from `~/Desktop/collections/${project_from}/${database}/`.
 
 More details can be found inside variables/mongo_variables.sh
 
@@ -105,13 +106,14 @@ More details can be found inside variables/mongo_variables.sh
 
 | Argument(s)             | alias         | Values(s)                                                         |
 |:------------------------|:--------------|:------------------------------------------------------------------|
-| project                | -p             | Specify which project this migration import is for.
-| database               | -d             | Specify which database to import ( dev, int, staging, or production ).
-| collections            | -c             | Specify comma delimited collections to migrate. Specify 'all' to import all collections.
-| from                   | -f             | Specify which collection environment to import from. Defaults to -d value.
-| truncate               | -t             | Whether to empty collection(s) before importing ( optional ).
-| verbose                | -v             | Enable verbosity for script.
-| skip_confirmation      | -y             | Skip detail confirmation prompt.
+| project from            | -a            | Specify which project this migration import is from. Defaults to value of -p.
+| project to              | -p            | Specify which project this migration import is to.
+| database to             | -d            | Specify which database to import into ( dev, int, staging, or production ).
+| database from           | -f            | Specify which collection environment to import from. Defaults to value of -d.
+| collections             | -c            | Specify comma delimited collections to migrate. Specify 'all' to import all collections.
+| truncate                | -t            | Whether to empty collection(s) before importing ( optional ).
+| verbose                 | -v            | Enable verbosity for script.
+| skip_confirmation       | -y            | Skip detail confirmation prompt.
 
 #### Example CLI Snippet:
 
@@ -133,10 +135,11 @@ More details can be found inside variables/mongo_variables.sh
 
 | Argument(s)             | alias         | Values(s)                                                         |
 |:------------------------|:--------------|:------------------------------------------------------------------|
-| project                | -p             | Specify which project this migration is for.
-| database               | -d             | Specify which database to import ( dev, int, staging, or production ).
+| project from           | -a             | Specify which project this migration is exporting from.
+| project to             | -p             | Specify which project this migration is importing to.
+| database from          | -f             | Specify which collection environment to export from ( dev, int, staging, or production ).
+| database to            | -d             | Specify which database to import to ( dev, int, staging, or production ).
 | collections            | -c             | Specify comma delimited collections to migrate. Specify 'all' to migrate all collections.
-| from                   | -f             | Specify which collection environment to export from ( dev, int, staging, or production ).
 | truncate               | -t             | Whether to empty collection(s) before importing ( optional ).
 | verbose                | -v             | Enable verbosity for script.
 | skip_confirmation      | -y             | Skip detail confirmation prompt.

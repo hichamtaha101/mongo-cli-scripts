@@ -1,6 +1,6 @@
 #!/usr/local/bin/bash
 
-source ./variables/ssh_variables.sh
+source ~/scripts/variables/ssh_variables.sh
 
 function ssh_ec2_usage() {
 	echo "Usage: ${0}	[i:]

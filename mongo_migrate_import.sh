@@ -1,24 +1,25 @@
 #!/usr/local/bin/bash
 
-source ./variables/mongo_variables.sh
+source ~/scripts/variables/mongo_variables.sh
 
-# Helper method that dispalys the usage of this script.
+# Helper method that dispalys the usage of this script. Colon means it expects a value, no colon is just a flag.
 mongo_migrate_import_usage() {
-	echo "Usage ${0} [p:d:c:f:tvy]
+	echo "Usage ${0} [a:p:f:d:c:tvy]
 
-Import full collections from a your local to a remote location.
+Import full collection(s) from one project's exported database(s) to another.
 
-[-p project]            Specify which project this migration import is for.
-[-d database]           Specify which database to import into ( dev or prod ).
+[-p project to]         Specify which project this migration import is to.
+[-a project from]       Specify which project this migration import is from. Defaults to value of -p.
+[-d database to]        Specify which database to import into ( dev or prod ).
+[-f database from]      Specify which collection environment to import from. Defaults to value of -d.
 [-c collections]        Specify comma delimited collections to migrate. Specify 'all' to import all collections.
-[-f from]               Speicfy which collection environment to import from. Defaults to database.
 [-t truncate]           Whether to empty collection(s) before importing ( optional ).
 [-v verbose]            Enable verbosity for script.
 [-y skip_confirmation]  Skip detail confirmation prompt." >&2
     exit 1
 }
 
-# Helper method that takes project name as $1 argument, database as $2 argument, collection as $3 argument, collections_dir as $4 argument.
+# Helper method that takes project name as $1, database as $2, collection as $3, collections_dir as $4, truncate option as $5.
 mongo_import() {
      mongoimport \
     --host ${hosts[$1]} \
@@ -27,67 +28,72 @@ mongo_import() {
     --authenticationDatabase ${authentication_databases[$1]} \
     --db $2 \
     --collection $3 \
-    --ssl \
     --type json \
-    --file "${4}/${3}.json"
+    --file "${4}/${3}.json" \
+    ${5} ${isMongoSSL[$1]}
 }
 
-# Helper method that takes project name as the $1 argument and database as the $2 argument.
-mongo_truncate() {
-    mongo \
-    "${mongoConnectionStrings[$1]}/${2}" \
-    --username ${usernames[$1]} \
-    --password ${passwords[$1]} \
-    --quiet \
-    --eval "db.${collection}.deleteMany({});"
-}
-
-mi_project=''
+mi_project_from=''
+mi_project_to=''
+mi_database_from=''
+mi_database_to=''
 mi_collections=''
-mi_database=''
-mi_from=''
-mi_truncate='false'
+mi_truncate=''
 mi_verbose='false'
 mi_skip_confirmation='false'
 
 OPTIND=1 # Reset for this script if using mongo_migrate.sh
-while getopts p:d:c:f:tvy OPTION
+while getopts a:p:f:d:c:tvy OPTION
 do
     case ${OPTION} in
-        p) mi_project="${OPTARG}" ;;
-        d) mi_database="${OPTARG}" ;;
-        c) mi_collections="${OPTARG}" ;;
-        t) mi_truncate='true' ;;
-        v) mi_verbose='true' ;;
-        f) mi_from="${OPTARG}" ;;
-        y) mi_skip_confirmation='true' ;;
+        a) mi_project_from="${OPTARG}";;
+        p) mi_project_to="${OPTARG}";;
+        f) mi_database_from="${OPTARG}";;
+        d) mi_database_to="${OPTARG}";;
+        c) mi_collections="${OPTARG}";;
+        t) mi_truncate='--drop';;
+        v) mi_verbose='true';;
+        y) mi_skip_confirmation='true';;
 
         # Handle unknown cases here.
         *) mongo_migrate_import_usage ;;
     esac
 done
 
-#Check project value.
-if [[ -z $mi_project ]] || [[ ! ${!hosts[@]} =~ $mi_project ]]; then
+# Check project to value.
+if [[ -z $mi_project_to ]] || [[ ! ${!hosts[@]} =~ $mi_project_to ]]; then
+    echo "Invalid -p option: ${mi_project_to}."
+    mongo_migrate_import_usage
+fi
+
+# Default project from to the same as project to.
+if [[ -z $mi_project_from ]]; then
+    mi_project_from=$mi_project_to
+fi
+# Ensure project from is a legitimate value.
+if [[ ! ${!hosts[@]} =~ $mi_project_from ]]; then
+    echo "Invalid -a option: ${mi_project_from}."
     mongo_migrate_import_usage
 fi
 
 # Check database value.
-if [[ -z $mi_database ]] || [[ ! ${databases[@]} =~ $mi_database ]]; then
+if [[ -z $mi_database_to ]] || [[ ! ${databases[@]} =~ $mi_database_to ]]; then
+    echo "Invalid -d option: ${mi_database_to}."
     mongo_migrate_import_usage
 fi
 
-# Default from database to same as importing database.
-if [[ -z $mi_from ]]; then
-    mi_from=$mi_database
+# Default from database to same as database importing.
+if [[ -z $mi_database_from ]]; then
+    mi_database_from=$mi_database_to
 fi
 
 # Check from value ( if passed in )
-if [[ ! -z $mi_from ]] && [[ ! ${databases[@]} =~ $mi_from ]]; then
+if [[ ! -z $mi_database_from ]] && [[ ! ${databases[@]} =~ $mi_database_from ]]; then
+    echo "Invalid -f option: ${mi_database_from}."
     mongo_migrate_import_usage
 fi 
 
-collections_dir=~/Desktop/collections/${mi_project}/${mi_from}
+collections_dir=~/Desktop/collections/${mi_project_from}/${mi_database_from}
 
 # Check collections value.
 if [[ -z $mi_collections ]]; then
@@ -107,8 +113,11 @@ fi
 
 # Import json files into $database.
 echo "Import Details
+Project From: ${mi_project_from}
+Project To: ${mi_project_to}
 Collections: ${collections_array[@]}
-Database: ${mi_database}
+Database From: ${mi_database_from}
+Database To: ${mi_database_to}
 Truncate: ${mi_truncate}
 Directory: ${collections_dir}
 "
@@ -125,24 +134,14 @@ fi
 echo "" > ~/scripts/logs/mongo_migrate_import_logs.txt # Empties log.
 for collection in "${collections_array[@]}"
 do 
-    # Check if we are truncating collection before importing.
-    if [[ $mi_truncate = 'true' ]]; then
-        if [[ $mi_verbose = 'true' ]]; then
-            mongo_truncate $mi_project $mi_database 2>&1 | tee -a ~/scripts/logs/mongo_migrate_import_logs.txt
-        else
-            mongo_truncate $mi_project $mi_database &>> ~/scripts/logs/mongo_migrate_import_logs.txt
-        fi
-        echo "Truncated collection ${mi_collection} on remote database ${mi_database}."
-    fi
-
     # Import each specified collection.
     if [[ $mi_verbose = 'true' ]]; then
-        mongo_import $mi_project $mi_database $collection $collections_dir 2>&1 | tee -a ~/scripts/logs/mongo_migrate_import_logs.txt
+        mongo_import $mi_project_to $mi_database_to $collection $collections_dir $mi_truncate 2>&1 | tee -a ~/scripts/logs/mongo_migrate_import_logs.txt
     else
-        mongo_import $mi_project $mi_database $collection $collections_dir &>> ~/scripts/logs/mongo_migrate_import_logs.txt
+        mongo_import $mi_project_to $mi_database_to $collection $collections_dir $mi_truncate &>> ~/scripts/logs/mongo_migrate_import_logs.txt
     fi
 
     echo "Imported ${collections_dir}/${collection}.json"
 done
 
-echo "Finished importing ${mi_database} collections from ${collections_dir}."
+echo "Finished importing ${mi_database_to} collections from ${collections_dir}."
