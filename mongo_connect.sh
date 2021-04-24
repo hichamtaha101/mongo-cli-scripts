@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 
 source ~/scripts/variables/mongo_variables.sh
 

@@ -1,4 +1,5 @@
 #!/usr/local/bin/bash
+
 # Might need these to use the mongo shell.
 # brew services stop mongodb
 # brew uninstall mongodb
