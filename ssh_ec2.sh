@@ -1,6 +1,7 @@
 #!/usr/local/bin/bash
 
-source ~/scripts/variables/ssh_variables.sh
+script_dir=$( dirname "${BASH_SOURCE[0]}" )
+source ~$script_dir/variables/ssh_variables.sh
 
 function ssh_ec2_usage() {
 	echo "Usage: ${0}	[i:]

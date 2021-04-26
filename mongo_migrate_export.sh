@@ -1,14 +1,7 @@
 #!/usr/local/bin/bash
 
-# Might need these to use the mongo shell.
-# brew services stop mongodb
-# brew uninstall mongodb
-# brew tap mongodb/brew
-# brew install mongodb-community
-# brew install mongodb/brew/mongodb-community-shell.
-# brew services start mongodb-community
-
-source ~/scripts/variables/mongo_variables.sh
+script_dir=$( dirname "${BASH_SOURCE[0]}" )
+source ${script_dir}/variables/mongo_variables.sh
 
 # Helper method that dispalys the usage of this script.
 mongo_migrate_export_usage() {
@@ -93,7 +86,7 @@ else
     IFS=',' read -r -a collections_array <<< $me_collections
 fi
 
-me_collections_dir=~/Desktop/collections/${me_project_to}/${me_database_from}
+me_collections_dir=${script_dir}/collections/${me_project_to}/${me_database_from}
 
 echo "Export Details
 Project: $me_project_to
@@ -113,13 +106,13 @@ fi
 
 # Make dir to export json files to. Iterate each collection.
 mkdir -p ${me_collections_dir}
-echo "" > ~/scripts/logs/mongo_migrate_export_logs.txt # Empties log.
+echo "" > ${script_dir}/logs/mongo_migrate_export_logs.txt # Empties log.
 for collection in "${collections_array[@]}"
 do
     if [[ $me_verbose = 'true' ]]; then
-        mongo_export $me_project_to $me_database_from $collection $me_collections_dir 2>&1 | tee -a ~/scripts/logs/mongo_migrate_export_logs.txt
+        mongo_export $me_project_to $me_database_from $collection $me_collections_dir 2>&1 | tee -a ${script_dir}/logs/mongo_migrate_export_logs.txt
     else
-        mongo_export $me_project_to $me_database_from $collection $me_collections_dir &>> ~/scripts/logs/mongo_migrate_export_logs.txt #Log details.
+        mongo_export $me_project_to $me_database_from $collection $me_collections_dir &>> ${script_dir}/logs/mongo_migrate_export_logs.txt #Log details.
     fi
     echo "Exported ${me_collections_dir}/${collection}.json"
 done

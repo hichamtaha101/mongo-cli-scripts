@@ -1,6 +1,7 @@
 #!/usr/local/bin/bash
 
-source ~/scripts/variables/mongo_variables.sh
+script_dir=$( dirname "${BASH_SOURCE[0]}" )
+source ~$script_dir/variables/mongo_variables.sh
 
 # Helper method that dispalys the usage of this script.
 mongo_migrate_usage() {

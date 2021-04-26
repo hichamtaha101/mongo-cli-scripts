@@ -3,21 +3,31 @@
 The following repository is meant to provide helpful CLI commands written for the bash shell.
 The following script is preferred for UNIX based environments. Untested on windows.
 
+<!-- # Might need these to use the mongo shell.
+# brew services stop mongodb
+# brew uninstall mongodb
+# brew tap mongodb/brew
+# brew install mongodb-community
+# brew install mongodb/brew/mongodb-community-shell.
+# brew services start mongodb-community -->
 ### How do I get set up? ###
 
-* Clone the repository into your home directory. Example `/Users/hicham.taha/scripts`.
+#### Mac OS Setup ####
 
-* You'll need to grab configs for the `variables/mongo_variables.sh.` file from one of the developers.
+-   You'll need to have *mongo*, *git/bash* installed on your host machine for this project to work.
+-   Clone the repository into your home directory. Example `/Users/hicham.taha/scripts`.
+-   You'll need to grab configs for the `variables/mongo_variables.sh.` file from one of the developers.
+-   You'll also need to grab any ec2 related private keys from one of the developers.
+-   If you've got keys, run `chmod 400 ~/scripts/keys/*` to allow the keys to be used by the script.
+-   Open up your linux user's bash_profile and adjust the environment path variable to account for the scripts' location. `PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:${HOME}/scripts; export PATH`. Note that each colon delimits a separate path to read from. The part that matters in this example is `${HOME}/scripts`.
+-   Make sure you have the latest version of bash on your local user. Click [here](https://itnext.io/upgrading-bash-on-macos-7138bd1066ba) for details. This will allow the following scripts to use the /usr/local/bin/bash interpreter for associative arrays.
+-   Source your bash_profile by running `source ~/.bash_profile`.
 
-* You'll also need to grab any ec2 related private keys from one of the developers.
+#### Docker Setup ####
 
-* Run `chmod 400 ~/scripts/keys/*` to allow the keys to be used by the script.
-
-* Open up your linux user's bash_profile and adjust the environment path variable to account for the scripts' location. `PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:${HOME}/scripts; export PATH`. Note that each colon delimits a separate path to read from. The part that matters in this example is `${HOME}/scripts`.
-
-* Make sure you have the latest version of bash on your local user. Click [here](https://itnext.io/upgrading-bash-on-macos-7138bd1066ba) for details. This will allow the following scripts to use the /usr/local/bin/bash interpreter for associative arrays.
-
-* Source your bash_profile by running `source ~/.bash_profile`.
+-   You'll need to have *docker*, *bash* installed on your host machine for this project to work. You can type `bash --version` to see if you have it already.
+-   If you are using solely docker to run scripts, run the command `/bin/bash replace_interpreter.sh \\/usr\\/local\\/bin\\/bash \\/bin\\/bash`.
+-   ^To undo this, run the command `/bin/bash replace_interpreter.sh \\/bin\\/bash \\/usr\\/local\\/bin\\/bash`
 
 ### Available Commands ###
 
@@ -70,7 +80,7 @@ This will connect to the dev database on the atlas mongo cluster for project.
 
 Export full collections from a remote location to your local.
 
-Collections will be exported into `~/Desktop/collections/${project}/${database}/`.
+Collections will be exported into `./collections/${project}/${database}/`.
 
 More details can be found inside variables/mongo_variables.sh
 
@@ -88,7 +98,7 @@ More details can be found inside variables/mongo_variables.sh
 
 `mongo_migrate_export.sh -p project -d dev -c all -v -y` 
 
-This will export ~/Desktop/collections/dev/*.json for the dev database, show all logs ( verbosity ), and skip detail confirmation.
+This will export ./scripts/collections/dev/*.json for the dev database, show all logs ( verbosity ), and skip detail confirmation.
 
 
 
@@ -98,7 +108,7 @@ This will export ~/Desktop/collections/dev/*.json for the dev database, show all
 
 Import full collection(s) from one project's exported database(s) to another.
 
-Collections will be imported from `~/Desktop/collections/${project_from}/${database}/`.
+Collections will be imported from `./collections/${project_from}/${database}/`.
 
 More details can be found inside variables/mongo_variables.sh
 
@@ -119,7 +129,7 @@ More details can be found inside variables/mongo_variables.sh
 
 `mongo_migrate_import.sh -p project -d dev -c users -t -v` 
 
-This will import ~/Desktop/collections/dev/users.json into the dev database, and truncate existing records on the dev users collection.
+This will import ./collections/dev/users.json into the dev database, and truncate existing records on the dev users collection.
 
 
 

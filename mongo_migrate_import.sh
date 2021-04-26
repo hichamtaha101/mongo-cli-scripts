@@ -1,6 +1,7 @@
 #!/usr/local/bin/bash
 
-source ~/scripts/variables/mongo_variables.sh
+script_dir=$( dirname "${BASH_SOURCE[0]}" )
+source ${script_dir}/variables/mongo_variables.sh
 
 # Helper method that dispalys the usage of this script. Colon means it expects a value, no colon is just a flag.
 mongo_migrate_import_usage() {
@@ -93,7 +94,7 @@ if [[ ! -z $mi_database_from ]] && [[ ! ${databases[@]} =~ $mi_database_from ]];
     mongo_migrate_import_usage
 fi 
 
-collections_dir=~/Desktop/collections/${mi_project_from}/${mi_database_from}
+collections_dir=${script_dir}/collections/${mi_project_from}/${mi_database_from}
 
 # Check collections value.
 if [[ -z $mi_collections ]]; then
@@ -131,14 +132,14 @@ if [[ $mi_skip_confirmation = 'false' ]]; then
     fi
 fi
 
-echo "" > ~/scripts/logs/mongo_migrate_import_logs.txt # Empties log.
+echo "" > ${script_dir}/logs/mongo_migrate_import_logs.txt # Empties log.
 for collection in "${collections_array[@]}"
 do 
     # Import each specified collection.
     if [[ $mi_verbose = 'true' ]]; then
-        mongo_import $mi_project_to $mi_database_to $collection $collections_dir $mi_truncate 2>&1 | tee -a ~/scripts/logs/mongo_migrate_import_logs.txt
+        mongo_import $mi_project_to $mi_database_to $collection $collections_dir $mi_truncate 2>&1 | tee -a ${script_dir}/logs/mongo_migrate_import_logs.txt
     else
-        mongo_import $mi_project_to $mi_database_to $collection $collections_dir $mi_truncate &>> ~/scripts/logs/mongo_migrate_import_logs.txt
+        mongo_import $mi_project_to $mi_database_to $collection $collections_dir $mi_truncate &>> ${script_dir}/logs/mongo_migrate_import_logs.txt
     fi
 
     echo "Imported ${collections_dir}/${collection}.json"
