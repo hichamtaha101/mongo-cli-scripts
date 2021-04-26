@@ -15,12 +15,11 @@ The following script is preferred for UNIX based environments. Untested on windo
 -   Make sure you have the latest version of bash on your local user. Click [here](https://itnext.io/upgrading-bash-on-macos-7138bd1066ba) for details. This will allow the following scripts to use the /usr/local/bin/bash interpreter for associative arrays.
 -   Source your bash_profile by running `source ~/.bash_profile`.
 -   Run the command `replace_interpreter.sh \\/bin\\/bash \\/usr\\/local\\/bin\\/bash` in the repository directory.
-
+-   To revert the above, run the command `/bin/bash replace_interpreter.sh \\/usr\\/local\\/bin\\/bash \\/bin\\/bash` in the repository directory.
 #### Docker Setup ####
 
--   You'll need to have *docker*, *bash* installed on your host machine for this project to work. You can type `bash --version` to see if you have it already.
--   Run the command `/bin/bash replace_interpreter.sh \\/usr\\/local\\/bin\\/bash \\/bin\\/bash` in the repository directory.
-
+-   You'll need to have *docker* installed on your host machine for this project to work.
+-   Run `docker-compose up` and using the docker UI, enter the CLI to start running the mongo scripts.
 ### Available Commands ###
 
 #### ssh_ec2.sh

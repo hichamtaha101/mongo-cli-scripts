@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 
 # Might need these to use the mongo shell if not using docker approach.
 # brew services stop mongodb

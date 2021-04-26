@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 
 script_dir=$( dirname "${BASH_SOURCE[0]}" )
 source ${script_dir}/variables/mongo_variables.sh
