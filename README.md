@@ -14,12 +14,12 @@ The following script is preferred for UNIX based environments. Untested on windo
 -   Open up your linux user's bash_profile and adjust the environment path variable to account for the scripts' location. `PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:${HOME}/scripts; export PATH`. Note that each colon delimits a separate path to read from. The part that matters in this example is `${HOME}/scripts`.
 -   Make sure you have the latest version of bash on your local user. Click [here](https://itnext.io/upgrading-bash-on-macos-7138bd1066ba) for details. This will allow the following scripts to use the /usr/local/bin/bash interpreter for associative arrays.
 -   Source your bash_profile by running `source ~/.bash_profile`.
+-   Run the command `replace_interpreter.sh \\/bin\\/bash \\/usr\\/local\\/bin\\/bash` in the repository directory.
 
 #### Docker Setup ####
 
 -   You'll need to have *docker*, *bash* installed on your host machine for this project to work. You can type `bash --version` to see if you have it already.
--   If you are using solely docker to run scripts, run the command `/bin/bash replace_interpreter.sh \\/usr\\/local\\/bin\\/bash \\/bin\\/bash`.
--   ^To undo this, run the command `/bin/bash replace_interpreter.sh \\/bin\\/bash \\/usr\\/local\\/bin\\/bash`
+-   Run the command `/bin/bash replace_interpreter.sh \\/usr\\/local\\/bin\\/bash \\/bin\\/bash` in the repository directory.
 
 ### Available Commands ###
 
