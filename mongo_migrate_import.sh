@@ -1,5 +1,13 @@
 #!/usr/local/bin/bash
 
+# Might need these to use the mongo shell if not using docker approach.
+# brew services stop mongodb
+# brew uninstall mongodb
+# brew tap mongodb/brew
+# brew install mongodb-community
+# brew install mongodb/brew/mongodb-community-shell.
+# brew services start mongodb-community
+
 script_dir=$( dirname "${BASH_SOURCE[0]}" )
 source ${script_dir}/variables/mongo_variables.sh
 

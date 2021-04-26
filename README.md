@@ -2,14 +2,6 @@
 
 The following repository is meant to provide helpful CLI commands written for the bash shell.
 The following script is preferred for UNIX based environments. Untested on windows.
-
-<!-- # Might need these to use the mongo shell.
-# brew services stop mongodb
-# brew uninstall mongodb
-# brew tap mongodb/brew
-# brew install mongodb-community
-# brew install mongodb/brew/mongodb-community-shell.
-# brew services start mongodb-community -->
 ### How do I get set up? ###
 
 #### Mac OS Setup ####
