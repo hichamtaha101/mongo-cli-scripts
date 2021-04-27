@@ -50,20 +50,14 @@ do
         *) mongo_migrate_export_usage ;;
     esac
 done
-
-# echo "${me_project_to} ${me_database_from} ${me_collections} ${isMongoSSL[$me_project_to]}"
+# Map project names to mongo key.
+if [[ -v "projects_mapped[${me_project_to}]" ]]; then me_project_to=${projects_mapped[$me_project_to]}; fi
 
 #Check project value.
-if [[ -z $me_project_to ]] || [[ ! ${!hosts[@]} =~ $me_project_to ]]; then
-    echo "Invalid -p option: ${me_project_to}."
-    mongo_migrate_export_usage
-fi
+if [[ -z $me_project_to ]] || [[ ! -v "hosts[${me_project_to}]" ]]; then echo "Invalid -p option: ${me_project_to}."; mongo_migrate_export_usage; fi
 
 # Check database value.
-if [[ -z $me_database_from ]] || [[ ! ${databases[@]} =~ $me_database_from ]]; then
-    echo "Invalid -d option: ${me_database_from}."
-    mongo_migrate_export_usage
-fi
+if [[ -z $me_database_from ]] || [[ ! -v "databases[${me_database_from}]" ]]; then echo "Invalid -d option: ${me_database_from}."; mongo_migrate_export_usage; fi
 
 # Check collections value.
 if [[ -z $me_collections ]]; then

@@ -68,43 +68,31 @@ do
         *) mongo_migrate_import_usage ;;
     esac
 done
+# Map project names to mongo key.
+if [[ -v "projects_mapped[${mi_project_from}]" ]]; then mi_project_from=${projects_mapped[$mi_project_from]}; fi
+if [[ -v "projects_mapped[${mi_project_to}]" ]]; then mi_project_to=${projects_mapped[$mi_project_to]}; fi
 
 # Check project to value.
-if [[ -z $mi_project_to ]] || [[ ! ${!hosts[@]} =~ $mi_project_to ]]; then
-    echo "Invalid -p option: ${mi_project_to}."
-    mongo_migrate_import_usage
-fi
+if [[ -z $mi_project_to ]] || [[ ! -v "hosts[${mi_project_to}]" ]]; then echo "Invalid -p option: ${mi_project_to}."; mongo_migrate_import_usage; fi
 
 # Default project from to the same as project to.
-if [[ -z $mi_project_from ]]; then
-    mi_project_from=$mi_project_to
-fi
+if [[ -z $mi_project_from ]]; then mi_project_from=$mi_project_to; fi
+
 # Ensure project from is a legitimate value.
-if [[ ! ${!hosts[@]} =~ $mi_project_from ]]; then
-    echo "Invalid -a option: ${mi_project_from}."
-    mongo_migrate_import_usage
-fi
+if [[ ! -v "hosts[${mi_project_from}]" ]]; then echo "Invalid -a option: ${mi_project_from}."; mongo_migrate_import_usage; fi
 
 # Check database value.
-if [[ -z $mi_database_to ]] || [[ ! ${databases[@]} =~ $mi_database_to ]]; then
-    echo "Invalid -d option: ${mi_database_to}."
-    mongo_migrate_import_usage
-fi
+if [[ -z $mi_database_to ]] || [[ ! -v "databases[${mi_database_to}]" ]]; then echo "Invalid -d option: ${mi_database_to}."; mongo_migrate_import_usage; fi
+if [[ ${mi_database_to} = 'prod' ]]; then echo "You are not allowed to import into production databases." >&2; exit 1; fi
 
 # Default from database to same as database importing.
-if [[ -z $mi_database_from ]]; then
-    mi_database_from=$mi_database_to
-fi
+if [[ -z $mi_database_from ]]; then mi_database_from=$mi_database_to; fi
 
 # Check from value ( if passed in )
-if [[ ! -z $mi_database_from ]] && [[ ! ${databases[@]} =~ $mi_database_from ]]; then
-    echo "Invalid -f option: ${mi_database_from}."
-    mongo_migrate_import_usage
-fi 
-
-collections_dir=${script_dir}/collections/${mi_project_from}/${mi_database_from}
+if [[ ! -z $mi_database_from ]] && [[ ! -v "databases[${mi_database_from}]" ]]; then echo "Invalid -f option: ${mi_database_from}."; mongo_migrate_import_usage; fi 
 
 # Check collections value.
+collections_dir=${script_dir}/collections/${mi_project_from}/${mi_database_from}
 if [[ -z $mi_collections ]]; then
     mongo_migrate_import_usage
 elif [[ $mi_collections = 'all' ]]; then

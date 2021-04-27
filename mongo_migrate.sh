@@ -1,7 +1,7 @@
 #!/bin/bash
 
 script_dir=$( dirname "${BASH_SOURCE[0]}" )
-source ~$script_dir/variables/mongo_variables.sh
+source ${script_dir}/variables/mongo_variables.sh
 
 # Helper method that dispalys the usage of this script.
 mongo_migrate_usage() {
@@ -11,7 +11,7 @@ Import full collection(s) database one destination to another.
 
 [-a project from]       Specify which project this migration is exporting from.
 [-p project to]         Specify which project this migration is importing to.
-[-f database from]      Speicfy which database to export ( dev or prod ).
+[-f database from]      Specify which database to export ( dev or prod ).
 [-d database to]        Specify which database to import into ( dev or prod ).
 [-c collections]        Specify comma delimited collections to migrate. Specify 'all' to migrate all collections.
 [-t truncate]           Whether to empty collection(s) before importing ( optional ).
@@ -47,43 +47,31 @@ do
         *) mongo_migrate_usage ;;
     esac
 done
+# Map project names to mongo key.
+if [[ -v "projects_mapped[${mm_project_to}]" ]]; then mm_project_to=${projects_mapped[$mm_project_to]}; fi
+if [[ -v "projects_mapped[${mm_project_from}]" ]]; then mm_project_from=${projects_mapped[$mm_project_from]}; fi
 
-#Check project to value.
-if [[ -z $mm_project_to ]] || [[ ! ${hosts[@]} =~ $mm_project_to ]]; then
-    echo "Invalid -p option: ${mm_project_to}."
-    mongo_migrate_usage
-fi
+# Check project_to value.
+if [[ -z $mm_project_to ]] || [[ ! -v "hosts[${mm_project_to}]" ]]; then echo "Invalid -p option: ${mm_project_to} ${!hosts[@]}."; mongo_migrate_usage; fi
 
-# Default project from to the same as project to.
-if [[ -z $mm_project_from ]]; then
-    mm_project_from=$mm_project_to
-fi
-# Ensure project from is a legitimate value.
-if [[ ! ${!hosts[@]} =~ $mm_project_from ]]; then
-    echo "Invalid -a option: ${mm_project_from}."
-    mongo_migrate_import_usage
-fi
+# Default project_from to the same as project to.
+if [[ -z $mm_project_from ]]; then mm_project_from=$mm_project_to; fi
+
+# Ensure project_from is a legitimate value.
+if [[ ! -v "hosts[${mm_project_from}]" ]]; then echo "Invalid -a option: ${mm_project_from}."; mongo_migrate_import_usage; fi
 
 # Check mm_database_to value.
-if [[ -z $mm_database_to ]] || [[ ! ${databases[@]} =~ $mm_database_to ]]; then
-    echo "Invalid -d option: ${mm_database_to}."
-    mongo_migrate_usage
-fi
+if [[ -z $mm_database_to ]] || [[ ! -v "databases[${mm_database_to}]" ]]; then echo "Invalid -d option: ${mm_database_to}."; mongo_migrate_usage; fi
+if [[ ${mm_database_to} = 'prod' ]]; then echo "You are not allowed to import into production databases." >&2; exit 1; fi
 
 # Check mm_database_from mm_database_to value
-if [[ -z $mm_database_from ]] || [[ ! ${databases[@]} =~ $mm_database_from ]]; then
-    echo "Invalid -f option: ${mm_database_from}."
-    mongo_migrate_usage
-fi 
+if [[ -z $mm_database_from ]] || [[ ! -v "databases[${mm_database_from}]" ]]; then echo "Invalid -f option: ${mm_database_from}."; mongo_migrate_usage; fi
 
 # Check collections has a value.
-if [[ -z $collections ]]; then
-    echo "Invalid -c option: ${collections}."
-    mongo_migrate_usage
-fi
+if [[ -z $collections ]]; then echo "Invalid -c option: ${collections}."; mongo_migrate_usage; fi
 
 # Run migration export
-source ~/scripts/mongo_migrate_export.sh -p $mm_project_from -d $mm_database_from -c $collections $verbose $skip_confirmation
+${script_dir}/mongo_migrate_export.sh -p $mm_project_from -d $mm_database_from -c $collections $verbose $skip_confirmation
 
 # Check if things ran smooth before continuing to import.
 if [[ ${?} -ne 0 ]]; then
@@ -92,7 +80,7 @@ if [[ ${?} -ne 0 ]]; then
 fi
 
 # Run migration import
-source ~/scripts/mongo_migrate_import.sh -a $mm_project_from -p $mm_project_to -f $mm_database_from -d $mm_database_to -c $collections $verbose $skip_confirmation $truncate
+${script_dir}/mongo_migrate_import.sh -a $mm_project_from -p $mm_project_to -f $mm_database_from -d $mm_database_to -c $collections $verbose $skip_confirmation $truncate
 if [[ ${?} -ne 0 ]]; then
     echo "Failed to import collections to ${mm_project_to} database ${mm_database_to}." >&2
     exit 1

@@ -19,7 +19,8 @@ The following script is preferred for UNIX based environments. Untested on windo
 #### Docker Setup ####
 
 -   You'll need to have *docker* installed on your host machine for this project to work.
--   Run `docker-compose up` and using the docker UI, enter the CLI to start running the mongo scripts.
+-   Run `docker-compose up -d` and using the docker UI, enter the CLI of the mongo container to start running the mongo scripts.
+-   *If using a windows, you may have to open the code base in a text editor and change the line endings from CRLF to LF for it to work in the container's linux environment.
 ### Available Commands ###
 
 #### ssh_ec2.sh

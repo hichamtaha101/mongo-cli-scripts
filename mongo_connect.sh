@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/local/bin/bash
 
 script_dir=$( dirname "${BASH_SOURCE[0]}" )
-source ~$script_dir/variables/mongo_variables.sh
+source ${script_dir}/variables/mongo_variables.sh
 
 mongo_connect_usage() {
 	echo "Usage: ${0} PROJECT DATABASE
@@ -18,11 +18,11 @@ if [[ ${#} -ne 2 ]]; then
 fi
 
 # Validate project argument.
-if [[ -z ${1} ]] || [[ ! ${hosts[@]} =~ ${1} ]]; then
+if [[ -z ${1} ]] || [[ ! -v "hosts[${1}]" ]]; then
 	mongo_connect_usage
 fi
 
-if [[ -z ${2} ]] || [[ ! ${databases[@]} =~ ${2} ]]; then
+if [[ -z ${2} ]] || [[ ! -v "databases[${2}]" ]]; then
 	mongo_connect_usage
 fi
 
