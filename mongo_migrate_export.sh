@@ -80,7 +80,7 @@ else
     IFS=',' read -r -a collections_array <<< $me_collections
 fi
 
-me_collections_dir=${script_dir}/collections/${me_project_to}/${me_database_from}
+me_collections_dir=${script_dir}/collections/${me_project_to}/${me_database_from}/$( date "+%Y-%m-%d" )
 
 echo "Export Details
 Project: $me_project_to

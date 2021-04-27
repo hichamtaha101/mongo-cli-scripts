@@ -92,7 +92,7 @@ if [[ -z $mi_database_from ]]; then mi_database_from=$mi_database_to; fi
 if [[ ! -z $mi_database_from ]] && [[ ! -v "databases[${mi_database_from}]" ]]; then echo "Invalid -f option: ${mi_database_from}."; mongo_migrate_import_usage; fi 
 
 # Check collections value.
-collections_dir=${script_dir}/collections/${mi_project_from}/${mi_database_from}
+collections_dir=${script_dir}/collections/${mi_project_from}/${mi_database_from}/$( date "+%Y-%m-%d" )
 if [[ -z $mi_collections ]]; then
     mongo_migrate_import_usage
 elif [[ $mi_collections = 'all' ]]; then
