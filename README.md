@@ -31,9 +31,9 @@ More details can be found inside variables/ssh_variables.sh
 
 #### Script parameters:
 
-| Argument(s)             | alias         | Values(s)                                                         |
-|:------------------------|:--------------|:------------------------------------------------------------------|
-| instance                | -i            | Specify the instance you are connecting to.
+| Argument(s)             | Alias         | Long          | Values(s)                                                         |
+|:------------------------|:--------------|:--------------|:--------------------------------------------------|
+| instance                | -i            | n/a           | Specify the instance you are connecting to.
 
 #### Example CLI Snippet:
 
@@ -53,10 +53,10 @@ More details can be found inside variables/mongo_variables.sh
 
 #### Script parameters:
 
-| Argument(s)             | alias         | Values(s)                                                         |
-|:------------------------|:--------------|:------------------------------------------------------------------|
-| project                 | ${1}          | Specify the project you are connecting to.
-| database                | ${2}          | Specify the database you are connecting to.
+| Argument(s)             | Alias         | Long          | Values(s)                                         |
+|:------------------------|:--------------|:--------------|:--------------------------------------------------|
+| project                 | ${1}          | n/a           | Specify the project you are connecting to.
+| database                | ${2}          | n/a           | Specify the database you are connecting to.
 
 #### Example CLI Snippet:
 
@@ -78,13 +78,13 @@ More details can be found inside variables/mongo_variables.sh
 
 #### Script parameters:
 
-| Argument(s)             | alias         | Values(s)                                                         |
-|:------------------------|:--------------|:------------------------------------------------------------------|
-| project                 | -p            | Specify which project this migration export is for.
-| database                | -d            | Specify which database to export ( dev, int, staging, or production ).
-| collections             | -c            | Specify comma delimited collections to export. Specify 'all' to export all collections.
-| verbose                 | -v            | Enable verbosity for script.
-| skip_confirmation       | -y            | Skip detail confirmation prompt.
+| Argument(s)             | Alias         | Long          | Values(s)                                         |
+|:------------------------|:--------------|:--------------|:--------------------------------------------------|
+| project                 | -p            | --project     | Specify which project this migration export is for.
+| database                | -d            | --database    | Specify which database to export ( dev, int, staging, or production ).
+| collections             | -c            | --collection  | Specify comma delimited collections to export. Specify 'all' to export all collections.
+| verbose                 | -v            | --verbose     | Enable verbosity for script.
+| skip_confirmation       | -s            | --skip        | Skip detail confirmation prompt.
 
 #### Example CLI Snippet:
 
@@ -106,16 +106,16 @@ More details can be found inside variables/mongo_variables.sh
 
 #### Script parameters:
 
-| Argument(s)             | alias         | Values(s)                                                         |
-|:------------------------|:--------------|:------------------------------------------------------------------|
-| project from            | -a            | Specify which project this migration import is from. Defaults to value of -p.
-| project to              | -p            | Specify which project this migration import is to.
-| database to             | -d            | Specify which database to import into ( dev, int, staging, or production ).
-| database from           | -f            | Specify which collection environment to import from. Defaults to value of -d.
-| collections             | -c            | Specify comma delimited collections to migrate. Specify 'all' to import all collections.
-| truncate                | -t            | Whether to empty collection(s) before importing ( optional ).
-| verbose                 | -v            | Enable verbosity for script.
-| skip_confirmation       | -y            | Skip detail confirmation prompt.
+| Argument(s)             | Alias         | Long           | Values(s)                                         |
+|:------------------------|:--------------|:---------------|:--------------------------------------------------|
+| project from            | -a            | --projectFrom  | Specify which project this migration import is from. Defaults to value of -p.
+| project to              | -p            | --projectTo    | Specify which project this migration import is to.
+| database from           | -f            | --databaseFrom | Specify which collection environment to import from. Defaults to value of -d.
+| database to             | -d            | --databaseTo   | Specify which database to import into ( dev, int, staging, or production ).
+| collections             | -c            | --collections  | Specify comma delimited collections to migrate. Specify 'all' to import all collections.
+| truncate                | -t            | --truncate     | Whether to empty collection(s) before importing ( optional ).
+| verbose                 | -v            | --verbose      | Enable verbosity for script.
+| skip_confirmation       | -s            | --skip         | Skip detail confirmation prompt.
 
 #### Example CLI Snippet:
 
@@ -135,16 +135,16 @@ More details can be found inside variables/mongo_variables.sh
 
 #### Script parameters:
 
-| Argument(s)             | alias         | Values(s)                                                         |
-|:------------------------|:--------------|:------------------------------------------------------------------|
-| project from           | -a             | Specify which project this migration is exporting from.
-| project to             | -p             | Specify which project this migration is importing to.
-| database from          | -f             | Specify which collection environment to export from ( dev, int, staging, or production ).
-| database to            | -d             | Specify which database to import to ( dev, int, staging, or production ).
-| collections            | -c             | Specify comma delimited collections to migrate. Specify 'all' to migrate all collections.
-| truncate               | -t             | Whether to empty collection(s) before importing ( optional ).
-| verbose                | -v             | Enable verbosity for script.
-| skip_confirmation      | -y             | Skip detail confirmation prompt.
+| Argument(s)             | Alias         | Long          | Values(s)                                         |
+|:------------------------|:--------------|:--------------|:--------------------------------------------------|
+| project from            | -a            | --projectFrom  | Specify which project this migration is exporting from.
+| project to              | -p            | --projectTo    | Specify which project this migration is importing to.
+| database from           | -f            | --databaseFrom | Specify which collection environment to export from ( dev, int, staging, or production ).
+| database to             | -d            | --databaseTo   | Specify which database to import to ( dev, int, staging, or production ).
+| collections             | -c            | --collections  | Specify comma delimited collections to migrate. Specify 'all' to migrate all collections.
+| truncate                | -t            | --truncate     | Whether to empty collection(s) before importing ( optional ).
+| verbose                 | -v            | --verbose      | Enable verbosity for script.
+| skip_confirmation       | -s            | --skip         | Skip detail confirmation prompt.
 
 #### Example CLI Snippet:
 

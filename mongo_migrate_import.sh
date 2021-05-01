@@ -13,18 +13,18 @@ source ${script_dir}/variables/mongo_variables.sh
 
 # Helper method that dispalys the usage of this script. Colon means it expects a value, no colon is just a flag.
 mongo_migrate_import_usage() {
-	echo "Usage ${0} [a:p:f:d:c:tvy]
+	echo "Usage ${0} [a:p:f:d:c:tvs]
 
 Import full collection(s) from one project's exported database(s) to another.
 
-[-p project to]         Specify which project this migration import is to.
-[-a project from]       Specify which project this migration import is from. Defaults to value of -p.
-[-d database to]        Specify which database to import into ( dev or prod ).
-[-f database from]      Specify which collection environment to import from. Defaults to value of -d.
-[-c collections]        Specify comma delimited collections to migrate. Specify 'all' to import all collections.
-[-t truncate]           Whether to empty collection(s) before importing ( optional ).
-[-v verbose]            Enable verbosity for script.
-[-y skip_confirmation]  Skip detail confirmation prompt." >&2
+[-a|--projectFrom   project from]       Specify which project this migration import is from. Defaults to value of -p.
+[-p|--projectTo     project to]         Specify which project this migration import is to.
+[-f|--databaseFrom  database from]      Specify which collection environment to import from. Defaults to value of -d.
+[-d|--databaseTo    database to]        Specify which database to import into ( dev or prod ).
+[-c|--collections   collections]        Specify comma delimited collections to migrate. Specify 'all' to import all collections.
+[-t|--truncate      truncate]           Whether to empty collection(s) before importing ( optional ).
+[-v|--verbose       verbose]            Enable verbosity for script.
+[-s|--skip          skip_confirmation]  Skip detail confirmation prompt." >&2
     exit 1
 }
 
@@ -50,24 +50,36 @@ mi_collections=''
 mi_truncate=''
 mi_verbose='false'
 mi_skip_confirmation='false'
+mi_positional_params=''
 
-OPTIND=1 # Reset for this script if using mongo_migrate.sh
-while getopts a:p:f:d:c:tvy OPTION
-do
-    case ${OPTION} in
-        a) mi_project_from="${OPTARG}";;
-        p) mi_project_to="${OPTARG}";;
-        f) mi_database_from="${OPTARG}";;
-        d) mi_database_to="${OPTARG}";;
-        c) mi_collections="${OPTARG}";;
-        t) mi_truncate='--drop';;
-        v) mi_verbose='true';;
-        y) mi_skip_confirmation='true';;
-
-        # Handle unknown cases here.
-        *) mongo_migrate_import_usage ;;
+# Parse all parameters
+while (( "${#}" )); do
+    case "${1}" in
+        -a|--projectFrom)
+            if [[ -n "${2}" ]] && [[ ${2:0:1} != '-' ]]; then mi_project_from="${2}"; shift 2
+            else echo "Error: Argument for ${1} is missing" >&2; mongo_migrate_import_usage; fi ;;
+        -p|--projectTo)
+            if [[ -n "${2}" ]] && [[ ${2:0:1} != '-' ]]; then mi_project_to="${2}"; shift 2
+            else echo "Error: Argument for ${1} is missing" >&2; mongo_migrate_import_usage; fi ;;
+        -f|--databaseFrom)
+            if [[ -n "${2}" ]] && [[ ${2:0:1} != '-' ]]; then mi_database_from="${2}"; shift 2
+            else echo "Error: Argument for ${1} is missing" >&2; mongo_migrate_import_usage; fi ;;
+        -d|--databaseTo)
+            if [[ -n "${2}" ]] && [[ ${2:0:1} != '-' ]]; then mi_database_to="${2}"; shift 2
+            else echo "Error: Argument for ${1} is missing" >&2; mongo_migrate_import_usage; fi ;;
+        -c|--collections)
+            if [[ -n "${2}" ]] && [[ ${2:0:01} != '-' ]]; then mi_collections="${2}"; shift 2
+            else echo "Error: Argument for ${1} is missing" >&2; mongo_migrate_import_usage; fi ;;
+        -t|--truncate) mi_truncate='--drop'; shift ;;
+        -v|--verbose) mi_verbose='true'; shift ;;
+        -s|--skip) mi_skip_confirmation='true'; shift ;;
+        # Handle unknown flags.
+        -*|--*=) echo "Error: Unsupported flag ${1}" >&2; mongo_migrate_import_usage ;;
+        # Store the rest of the positional parameters.
+         *) mi_positional_params="${mi_positional_params} ${1}"; shift ;;
     esac
 done
+
 # Map project names to mongo key.
 if [[ -v "projects_mapped[${mi_project_from}]" ]]; then mi_project_from=${projects_mapped[$mi_project_from]}; fi
 if [[ -v "projects_mapped[${mi_project_to}]" ]]; then mi_project_to=${projects_mapped[$mi_project_to]}; fi
@@ -128,14 +140,15 @@ if [[ $mi_skip_confirmation = 'false' ]]; then
     fi
 fi
 
-echo "" > ${script_dir}/logs/mongo_migrate_import_logs.txt # Empties log.
+mi_log_file=$( date "+%Y_%m_%d" )_mongo_migrate_import_logs.txt
+echo "" > ${script_dir}/logs/${mi_log_file} # Empties log.
 for collection in "${collections_array[@]}"
 do 
     # Import each specified collection.
     if [[ $mi_verbose = 'true' ]]; then
-        mongo_import $mi_project_to $mi_database_to $collection $collections_dir $mi_truncate 2>&1 | tee -a ${script_dir}/logs/mongo_migrate_import_logs.txt
+        mongo_import $mi_project_to $mi_database_to $collection $collections_dir $mi_truncate 2>&1 | tee -a ${script_dir}/logs/${mi_log_file}
     else
-        mongo_import $mi_project_to $mi_database_to $collection $collections_dir $mi_truncate &>> ${script_dir}/logs/mongo_migrate_import_logs.txt
+        mongo_import $mi_project_to $mi_database_to $collection $collections_dir $mi_truncate &>> ${script_dir}/logs/${mi_log_file}
     fi
 
     echo "Imported ${collections_dir}/${collection}.json"

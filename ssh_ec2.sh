@@ -37,4 +37,4 @@ if [[ -z $ec2_instance ]] || [[ ! ${!ssh_keys[@]} =~ $ec2_instance ]]; then
 fi
 
 #SSH into the instance.
-ssh -i ./keys/${ssh_keys[$ec2_instance]} ${ssh_user[$ec2_instance]}@${ssh_address[$ec2_instance]}
+ssh -i ${script_dir}/keys/${ssh_keys[$ec2_instance]} ${ssh_user[$ec2_instance]}@${ssh_address[$ec2_instance]}
