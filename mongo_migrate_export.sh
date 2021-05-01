@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# --------------------------------------------------------------------------------------------
+# [Hicham Taha] mongo_migrate_export.sh
+#				Export database collection(s) from one project's database to a project's collections 
+#       directory.
+# --------------------------------------------------------------------------------------------
+
 script_dir=$( dirname "${BASH_SOURCE[0]}" )
 source ${script_dir}/variables/mongo_variables.sh
 

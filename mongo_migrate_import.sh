@@ -1,12 +1,19 @@
 #!/bin/bash
 
-# Might need these to use the mongo shell if not using docker approach.
-# brew services stop mongodb
-# brew uninstall mongodb
-# brew tap mongodb/brew
-# brew install mongodb-community
-# brew install mongodb/brew/mongodb-community-shell.
-# brew services start mongodb-community
+# --------------------------------------------------------------------------------------------
+# [Hicham Taha] mongo_migrate_import.sh
+#				Import existing collection(s) from a project's collection directory to another 
+#               project's database.
+#
+#               Might need these to use the mongo shell if not using docker approach.
+#               brew services stop mongodb
+#               brew uninstall mongodb
+#               brew tap mongodb/brew
+#               brew install mongodb-community
+#               brew install mongodb/brew/mongodb-community-shell.
+#               brew services start mongodb-community
+# --------------------------------------------------------------------------------------------
+
 
 script_dir=$( dirname "${BASH_SOURCE[0]}" )
 source ${script_dir}/variables/mongo_variables.sh

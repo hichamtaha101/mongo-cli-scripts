@@ -1,5 +1,10 @@
 #!/usr/local/bin/bash
 
+# --------------------------------------------------------------------------------------------
+# [Hicham Taha] mongo_connect.sh
+#				Connect to a mongo cluster node.
+# --------------------------------------------------------------------------------------------
+
 script_dir=$( dirname "${BASH_SOURCE[0]}" )
 source ${script_dir}/variables/mongo_variables.sh
 

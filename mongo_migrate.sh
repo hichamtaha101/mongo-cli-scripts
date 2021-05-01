@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# --------------------------------------------------------------------------------------------
+# [Hicham Taha] mongo_migrate.sh
+#				Migrates database collection(s) from one project to another.
+# --------------------------------------------------------------------------------------------
+
 script_dir=$( dirname "${BASH_SOURCE[0]}" )
 source ${script_dir}/variables/mongo_variables.sh
 
