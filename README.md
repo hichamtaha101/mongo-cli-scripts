@@ -88,7 +88,7 @@ More details can be found inside variables/mongo_variables.sh
 
 #### Example CLI Snippet:
 
-`mongo_migrate_export.sh -p project -d dev -c all -v -y` 
+`mongo_migrate_export.sh -p project -d dev -c all -v -s` 
 
 This will export ./scripts/collections/dev/*.json for the dev database, show all logs ( verbosity ), and skip detail confirmation.
 
