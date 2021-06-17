@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/local/bin/bash
 
 # --------------------------------------------------------------------------------------------
 # [Hicham Taha] mongo_migrate_import.sh
@@ -102,7 +102,7 @@ if [[ ! -v "hosts[${mi_project_from}]" ]]; then echo "Invalid -a option: ${mi_pr
 
 # Check database value.
 if [[ -z $mi_database_to ]] || [[ ! -v "databases[${mi_database_to}]" ]]; then echo "Invalid -d option: ${mi_database_to}."; mongo_migrate_import_usage; fi
-if [[ ${mi_database_to} = 'prod' ]]; then echo "You are not allowed to import into production databases." >&2; exit 1; fi
+if [[ ${mi_database_to} = 'prod' ]] && [[ ${mi_project_to} != 'local' ]]; then echo "You are not allowed to import into production databases." >&2; exit 1; fi
 
 # Default from database to same as database importing.
 if [[ -z $mi_database_from ]]; then mi_database_from=$mi_database_to; fi

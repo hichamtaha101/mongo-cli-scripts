@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/local/usr/local/bin/bash
 
 # --------------------------------------------------------------------------------------------
 # [Hicham Taha] mongo_connect.sh
