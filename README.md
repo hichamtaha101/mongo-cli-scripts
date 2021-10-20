@@ -1,21 +1,6 @@
 # README #
 
-The following repository is meant to provide helpful CLI commands written for the bash shell.
-The following script is preferred for UNIX based environments. Untested on windows.
-### How do I get set up? ###
-
-#### Mac OS Setup ####
-
--   You'll need to have *mongo*, *git/bash* installed on your host machine for this project to work.
--   Clone the repository into your home directory. Example `/Users/hicham.taha/scripts`.
--   You'll need to grab configs for the `variables/mongo_variables.sh.` file from one of the developers.
--   You'll also need to grab any ec2 related private keys from one of the developers.
--   If you've got keys, run `chmod 400 ~/scripts/keys/*` to allow the keys to be used by the script.
--   Open up your linux user's bash_profile and adjust the environment path variable to account for the scripts' location. `PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:${HOME}/scripts; export PATH`. Note that each colon delimits a separate path to read from. The part that matters in this example is `${HOME}/scripts`.
--   Make sure you have the latest version of bash on your local user. Click [here](https://itnext.io/upgrading-bash-on-macos-7138bd1066ba) for details. This will allow the following scripts to use the /usr/local/bin/bash interpreter for associative arrays.
--   Source your bash_profile by running `source ~/.bash_profile`.
--   Run the command `replace_interpreter.sh \\/bin\\/bash \\/usr\\/local\\/bin\\/bash` in the repository directory.
--   To revert the above, run the command `/bin/bash replace_interpreter.sh \\/usr\\/local\\/bin\\/bash \\/bin\\/bash` in the repository directory.
+The following repository is meant to provide shell utilities using the mongo CLI.
 #### Docker Setup ####
 
 -   You'll need to have *docker* installed on your host machine for this project to work.
@@ -23,28 +8,10 @@ The following script is preferred for UNIX based environments. Untested on windo
 -   *If using a windows, you may have to open the code base in a text editor and change the line endings from CRLF to LF for it to work in the container's linux environment.
 ### Available Commands ###
 
-#### ssh_ec2.sh
-
-Connect to an AWS EC2 instance.
-
-More details can be found inside variables/ssh_variables.sh
-
-#### Script parameters:
-
-| Argument(s)             | Alias         | Long          | Values(s)                                                         |
-|:------------------------|:--------------|:--------------|:--------------------------------------------------|
-| instance                | -i            | n/a           | Specify the instance you are connecting to.
-
-#### Example CLI Snippet:
-
-`ssh_ec2 -i project-dev`
-
-This will connect to the project dev ec2 instance on aws using the private key found in keys/dev-project.pem
 
 
 
 
---------------------------------------------
 #### mongo_connect.sh
 
 Connect to an atlas mongo database cluster.
