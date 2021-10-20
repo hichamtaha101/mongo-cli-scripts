@@ -8,6 +8,7 @@
 script_dir=$( dirname "${BASH_SOURCE[0]}" )
 source ${script_dir}/variables/mongo_variables.sh
 
+
 mongo_connect_usage() {
 	echo "Usage: ${0} PROJECT DATABASE
 
