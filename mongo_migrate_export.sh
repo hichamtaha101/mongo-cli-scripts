@@ -80,7 +80,7 @@ if [[ -z $me_collections ]]; then
   mongo_migrate_export_usage
 elif [[ $me_collections = 'all' ]]; then
   # Grab all collections available from server.
-  me_collections=$( echo "show collections" | mongo "${mongoConnectionStrings[$me_project_to]}/${me_database_from}" --username ${usernames[$me_project_to]} --password ${passwords[$me_project_to]} --quiet )
+  me_collections=$( echo "show collections" | mongo "${mongoConnectionStrings[$me_project_to]}/${me_database_from}?authSource=admin" --username ${usernames[$me_project_to]} --password ${passwords[$me_project_to]} --quiet )
 
   if [[ ${?} -ne 0 ]]; then
     echo "Unable to connect to ${mongoConnectionStrings[$me_project_to]}/${me_database_from}."
