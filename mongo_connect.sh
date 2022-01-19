@@ -13,7 +13,7 @@ mongo_connect_usage() {
 
 Connect to a mongo database.
 
-PROJECT			Either henesys or bittreo.
+PROJECT			Only bittreo for now.
 DATABASE		Either dev or prod." >&2
 	exit 1
 }
