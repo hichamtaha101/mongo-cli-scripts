@@ -31,7 +31,7 @@ More details can be found inside variables/mongo_variables.sh
 
 #### Example CLI Snippet:
 
-`mongo_connect.sh project dev`
+`/bin/bash mongo_connect.sh project dev`
 
 This will connect to the dev database on the atlas mongo cluster for project.
 
@@ -59,7 +59,7 @@ More details can be found inside variables/mongo_variables.sh
 
 #### Example CLI Snippet:
 
-`mongo_migrate_export.sh -p project -d dev -c all -v -s` 
+`/bin/bash mongo_migrate_export.sh -p project -d dev -c all -v -s` 
 
 This will export ./scripts/collections/dev/*.json for the dev database, show all logs ( verbosity ), and skip detail confirmation.
 
@@ -90,7 +90,7 @@ More details can be found inside variables/mongo_variables.sh
 
 #### Example CLI Snippet:
 
-`mongo_migrate_import.sh -p project -d dev -c users -t -v` 
+`/bin/bash mongo_migrate_import.sh -p project -d dev -c users -t -v` 
 
 This will import ./collections/dev/users.json into the dev database, and truncate existing records on the dev users collection.
 
@@ -119,6 +119,6 @@ More details can be found inside variables/mongo_variables.sh
 
 #### Example CLI Snippet:
 
-`mongo_migrate.sh -p project -f dev -d int -c users -t` 
+`/bin/bash mongo_migrate.sh -p project -f dev -d int -c users -t` 
 
 This will migrate dev users into integration users, and truncate existing records on the int users collection. 
