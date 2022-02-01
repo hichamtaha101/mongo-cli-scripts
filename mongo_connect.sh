@@ -13,7 +13,7 @@ mongo_connect_usage() {
 
 Connect to a mongo database.
 
-PROJECT			Only bittreo for now.
+PROJECT			Project key used as a reference when mapping varibales/mongo_variables.sh.
 DATABASE		Either dev or prod." >&2
 	exit 1
 }

@@ -1,13 +1,17 @@
 # README #
 
-The following repository is meant to provide shell utilities using the mongo CLI.
-#### Docker Setup ####
+The following repository is meant to provide shell utilities using the mongo CLI on a docker mongo container.
+-    All command line outputs are stored in the logs/ directory.
+-    Collection imports and exports are stored in a collections/${project}/${yyyy-mm-dd} directory.
 
--   You'll need to have *docker* installed on your host machine for this project to work.
--   Run `docker-compose up -d` and using the docker UI, enter the CLI of the mongo container to start running the mongo scripts.
--   *If using a windows, you may have to open the code base in a text editor and change the line endings from CRLF to LF for it to work in the container's linux environment.
+#### How to Setup ####
+
+-    You'll need to have *docker* installed on your host machine for this project to work.
+-    Run `docker-compose up -d` and using the docker UI, enter the CLI of the mongo container to start running the mongo scripts.
+-    *If using windows, you may have to open the code base in a text editor and change the line endings from CRLF to LF for it to work in the container's linux environment.
+-    Define your environment variables in a new `variables/mongo_variables.sh` file using the `variables/mongo_variables.sample.sh` file as a template.
+
 ### Available Commands ###
-
 
 
 
