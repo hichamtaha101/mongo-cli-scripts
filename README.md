@@ -1,8 +1,8 @@
 # README #
 
 The following repository is meant to provide shell utilities using the mongo CLI on a docker mongo container.
--    All command line outputs are stored in the logs/ directory.
--    Collection imports and exports are stored in a collections/${project}/${yyyy-mm-dd} directory.
+-    All command line outputs are stored in the `logs/` directory.
+-    Collection imports and exports are stored in a `collections/${project}/${yyyy-mm-dd}` directory.
 
 #### How to Setup ####
 
