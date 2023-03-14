@@ -54,6 +54,7 @@ More details can be found inside variables/mongo_variables.sh
 | project                 | -p            | --project     | Specify which project this migration export is for.
 | database                | -d            | --database    | Specify which database to export ( dev, int, staging, or production ).
 | collections             | -c            | --collection  | Specify comma delimited collections to export. Specify 'all' to export all collections.
+| exclude                 | -x            | --exclude     | Specify comma delimited collections to not export.
 | verbose                 | -v            | --verbose     | Enable verbosity for script.
 | skip_confirmation       | -s            | --skip        | Skip detail confirmation prompt.
 
@@ -84,6 +85,7 @@ More details can be found inside variables/mongo_variables.sh
 | database from           | -f            | --databaseFrom | Specify which collection environment to import from. Defaults to value of -d.
 | database to             | -d            | --databaseTo   | Specify which database to import into ( dev, int, staging, or production ).
 | collections             | -c            | --collections  | Specify comma delimited collections to migrate. Specify 'all' to import all collections.
+| exclude                 | -x            | --exclude      | Specify comma delimited collections to not export.
 | truncate                | -t            | --truncate     | Whether to empty collection(s) before importing ( optional ).
 | verbose                 | -v            | --verbose      | Enable verbosity for script.
 | skip_confirmation       | -s            | --skip         | Skip detail confirmation prompt.
@@ -113,6 +115,7 @@ More details can be found inside variables/mongo_variables.sh
 | database from           | -f            | --databaseFrom | Specify which collection environment to export from ( dev, int, staging, or production ).
 | database to             | -d            | --databaseTo   | Specify which database to import to ( dev, int, staging, or production ).
 | collections             | -c            | --collections  | Specify comma delimited collections to migrate. Specify 'all' to migrate all collections.
+| exclude                 | -x            | --exclude      | Specify comma delimited collections to not export.
 | truncate                | -t            | --truncate     | Whether to empty collection(s) before importing ( optional ).
 | verbose                 | -v            | --verbose      | Enable verbosity for script.
 | skip_confirmation       | -s            | --skip         | Skip detail confirmation prompt.

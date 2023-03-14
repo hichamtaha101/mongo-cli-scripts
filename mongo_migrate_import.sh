@@ -146,7 +146,7 @@ echo "Import Details
 Project From: ${mi_project_from}
 Project To: ${mi_project_to}
 Collections: ${collections_array[@]}
-Collections: ${exclude_collections_array[@]}
+Exclude: ${exclude_collections_array[@]}
 Database From: ${mi_database_from}
 Database To: ${mi_database_to}
 Truncate: ${mi_truncate}
