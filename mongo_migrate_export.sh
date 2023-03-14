@@ -15,10 +15,11 @@ mongo_migrate_export_usage() {
 
 Export full collections from a remote location to your local.
 
-[-p|--project     project to]         Specify which project this migration export is for.
-[-d|--database    database]           Specify which database to export ( dev or prod ).
-[-c|--collections collections]        Specify comma delimited collections to export. Specify 'all' to export all collections.
-[-v|--verbose     verbose]            Enable verbosity for script.
+[-p|--project     project to]         Which project this migration export is for.
+[-d|--database    database]           Which database to export ( dev or prod ).
+[-c|--collections collections]        Comma delimited collections to export. Specify 'all' to export all collections. Cannot be used with exclude flag.
+[-x|--exclude     exclude]            Comma delimited collections to exclude from export (optional). Cannot be used with collections flag.
+[-v|--verbose     verbose]            Enable verbosity for script (optional).
 [-s|--skip        skip_confirmation]  Skip detail confirmation prompt." >&2
   exit 1
 }
@@ -41,10 +42,11 @@ me_positional_params=''
 me_project_to=''
 me_database_from=''
 me_collections=''
+me_collections_exclude=''
 me_verbose='false'
 me_skip_confirmation='false'
 
-# Parse all parameters
+# Parse all parameters. ${2:0:1} means grab the substring on $2 starting from index 0 with a onwards length of 1.
 while (( "${#}" )); do
   case "${1}" in
     -p|--project)
@@ -56,6 +58,9 @@ while (( "${#}" )); do
     -c|--collections)
       if [[ -n "${2}" ]] && [[ ${2:0:1} != "-" ]]; then me_collections="${2}"; shift 2
       else echo "Error: Argument for ${1} is missing" >&2; mongo_migrate_export_usage; fi ;;
+    -x|--exclude)
+        if [[ -n "${2}" ]] && [[ ${2:0:1} != "-" ]]; then me_collections_exclude="${2}"; shift 2
+        else echo "Error: Argument for ${1} is missing" >&2; mongo_migrate_export_usage; fi ;;
     -v|--verbose) me_verbose='true'; shift ;;
     -s|--skip) me_skip_confirmation='true'; shift ;;
     # Handle unknown flags.
@@ -64,6 +69,15 @@ while (( "${#}" )); do
     *) me_positional_params="${me_positional_params} ${1}"; shift ;;
   esac
 done
+
+# Exclude validations.
+if [[ -n $me_collections ]] && [[ -n $me_collections_exclude ]]; then echo "Cannot specify both collections and exclude flags."; mongo_migrate_export_usage; fi;
+if [[ -n $me_collections_exclude ]]; then 
+    me_collections="all"
+
+    #convert comma delimited collections into array.
+    IFS=',' read -r -a exclude_collections_array <<< $me_collections_exclude
+fi # Both cannot be specified, so if exclude is specified, set collections to all.
 
 # Map project names to mongo key.
 if [[ -v "projects_mapped[${me_project_to}]" ]]; then me_project_to=${projects_mapped[$me_project_to]}; fi
@@ -95,13 +109,15 @@ else
   IFS=',' read -r -a collections_array <<< $me_collections
 fi
 
-me_collections_dir=${script_dir}/collections/${me_project_to}/${me_database_from}/$( date "+%Y-%m-%d" )
+me_collections_dir=${script_dir}/collections/${me_project_to}/${me_database_from}/$( date "+%Y-%m-%d:%H:%M:%S" )
+me_latest_dir=${script_dir}/collections/${me_project_to}/${me_database_from}/latest
 
 echo "Export Details
 Project: $me_project_to
 Database From: $me_database_from
 Directory: ${me_collections_dir}
 Collections: ${collections_array[@]}
+Exclude: ${exclude_collections_array[@]}
 "
 
 # Prompt a confirmation on the details ( if not skipped ).
@@ -113,18 +129,25 @@ if [[ $me_skip_confirmation = 'false' ]]; then
   fi
 fi
 
-# Make dir to export json files to. Iterate each collection.
+# Make dir to export json files to and clean latest/ directory. Iterate each collection.
 mkdir -p ${me_collections_dir}
-me_log_file=$( date "+%Y_%m_%d" )_mongo_migrate_export_logs.txt
+rm -rf ${me_latest_dir}
+mkdir -p ${me_latest_dir}
+me_log_file=$( date "+%Y-%m-%d:%H:%M:%S" )_mongo_migrate_export_logs.txt
 echo "" > ${script_dir}/logs/${me_log_file} # Empties log.
 for collection in "${collections_array[@]}"
 do
+  # Check if excluded.
+  if [[ ${exclude_collections_array[@]} =~ $collection ]]; then continue; fi
+
   if [[ $me_verbose = 'true' ]]; then
     mongo_export $me_project_to $me_database_from $collection $me_collections_dir 2>&1 | tee -a ${script_dir}/logs/${me_log_file}
   else
-    mongo_export $me_project_to $me_database_from $collection $me_collections_dir &>> ${script_dir}/logs/${me_log_file} #Log details.
+    mongo_export $me_project_to $me_database_from $collection $me_collections_dir &>> ${script_dir}/logs/${me_log_file} #Redirect file descriptor.
   fi
   echo "Exported ${me_collections_dir}/${collection}.json"
 done
+
+cp -R ${me_collections_dir}/* ${me_latest_dir} # Copy over to latest for migration reference.
 
 echo "Finished exporting ${me_database_from} collections to ${me_collections_dir}."

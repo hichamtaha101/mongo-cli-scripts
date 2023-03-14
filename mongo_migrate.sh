@@ -19,6 +19,7 @@ Import full collection(s) database one destination to another.
 [-f|--databaseFrom  database from]      Specify which database to export ( dev or prod ).
 [-d|--databaseTo    database to]        Specify which database to import into ( dev or prod ).
 [-c|--collections   collections]        Specify comma delimited collections to migrate. Specify 'all' to migrate all collections.
+[-x|--exclude       exclude]            Comma delimited collections to exclude from export (optional). Cannot be used with collections flag.
 [-t|--truncate      truncate]           Whether to empty collection(s) before importing ( optional ).
 [-v|--verbose       verbose]            Enable verbosity for the script.
 [-s|--skip          skip_confirmation]  Skip detail confirmation prompt." >&2
@@ -31,6 +32,7 @@ mm_project_to=''
 mm_database_from=''
 mm_database_to=''
 mm_collections=''
+mm_collections_exclude=''
 mm_truncate=''
 mm_verbose=''
 mm_skip_confirmation=''
@@ -53,6 +55,9 @@ while (( "${#}" )); do
     -c|--collections)
       if [[ -n "${2}" ]] && [[ ${2:0:1} != '-' ]]; then mm_collections="${2}"; shift 2
       else echo "Error: Argument for ${1} is missing" >&2; mongo_migrate_usage; fi ;;
+    -x|--exclude)
+        if [[ -n "${2}" ]] && [[ ${2:0:1} != "-" ]]; then mm_collections_exclude="${2}"; shift 2
+        else echo "Error: Argument for ${1} is missing" >&2; mongo_migrate_usage; fi ;;
     -t|--truncate) mm_truncate="--truncate"; shift ;;
     -v|--verbose) mm_verbose="--verbose"; shift ;;
     -s|--skip) mm_skip_confirmation="--skip"; shift ;;
@@ -63,6 +68,8 @@ while (( "${#}" )); do
   esac
 done
 
+# Check at least collections or exclude is specified.
+if [[ -n $mm_collections ]] && [[ -n $mm_collections_exclude ]]; then echo "Cannot specify both collections and exclude flags."; mongo_migrate_usage; fi;
 
 # Map project names to mongo key.
 if [[ -v "projects_mapped[${mm_project_to}]" ]]; then mm_project_to=${projects_mapped[$mm_project_to]}; fi
@@ -84,11 +91,14 @@ if [[ ${mm_database_to} = 'prod' ]] && [[ ${mm_project_to} != 'local' ]]; then e
 # Check mm_database_from mm_database_to value
 if [[ -z $mm_database_from ]] || [[ ! -v "databases[${mm_database_from}]" ]]; then echo "Invalid -f option: ${mm_database_from}."; mongo_migrate_usage; fi
 
-# Check collections has a value.
-if [[ -z $mm_collections ]]; then echo "Invalid -c option: ${mm_collections}."; mongo_migrate_usage; fi
-
 # Run migration export
-${script_dir}/mongo_migrate_export.sh -p $mm_project_from -d $mm_database_from -c $mm_collections $mm_verbose $mm_skip_confirmation
+${script_dir}/mongo_migrate_export.sh \
+-p $mm_project_from \
+-d $mm_database_from \
+-c $mm_collections \
+-x $mm_collections_exclude \
+$mm_verbose \
+$mm_skip_confirmation
 
 # Check if things ran smooth before continuing to import.
 if [[ ${?} -ne 0 ]]; then
@@ -97,7 +107,17 @@ if [[ ${?} -ne 0 ]]; then
 fi
 
 # Run migration import
-${script_dir}/mongo_migrate_import.sh -a $mm_project_from -p $mm_project_to -f $mm_database_from -d $mm_database_to -c $mm_collections $mm_verbose $mm_skip_confirmation $mm_truncate
+${script_dir}/mongo_migrate_import.sh \
+-a $mm_project_from \
+-p $mm_project_to \
+-f $mm_database_from \
+-d $mm_database_to \
+-c $mm_collections \
+-x $mm_collections_exclude \
+$mm_verbose \
+$mm_skip_confirmation \
+$mm_truncate
+
 if [[ ${?} -ne 0 ]]; then
     echo "Failed to import collections to ${mm_project_to} database ${mm_database_to}." >&2
     exit 1
