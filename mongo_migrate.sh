@@ -91,12 +91,14 @@ if [[ ${mm_database_to} = 'prod' ]] && [[ ${mm_project_to} != 'local' ]]; then e
 # Check mm_database_from mm_database_to value
 if [[ -z $mm_database_from ]] || [[ ! -v "databases[${mm_database_from}]" ]]; then echo "Invalid -f option: ${mm_database_from}."; mongo_migrate_usage; fi
 
+mm_cx_arg="-c ${mm_collections}"
+if [[ -n $mm_collections_exclude ]]; then mm_cx_arg="-x ${mm_collections_exclude}"; fi
+
 # Run migration export
 ${script_dir}/mongo_migrate_export.sh \
 -p $mm_project_from \
 -d $mm_database_from \
--c $mm_collections \
--x $mm_collections_exclude \
+$mm_cx_arg \
 $mm_verbose \
 $mm_skip_confirmation
 
@@ -112,8 +114,7 @@ ${script_dir}/mongo_migrate_import.sh \
 -p $mm_project_to \
 -f $mm_database_from \
 -d $mm_database_to \
--c $mm_collections \
--x $mm_collections_exclude \
+$mm_cx_arg \
 $mm_verbose \
 $mm_skip_confirmation \
 $mm_truncate
