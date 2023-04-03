@@ -162,12 +162,12 @@ if [[ $mi_skip_confirmation = 'false' ]]; then
     fi
 fi
 
-mi_log_file=$( date "+%Y-%m-%d:%H:%M:%S" )_mongo_migrate_import_logs.txt
+mi_log_file=$( date "+%Y-%m-%dT%H:%M:%S" )_mongo_migrate_import_logs.txt
 echo "" > ${script_dir}/logs/${mi_log_file}
 for collection in "${collections_array[@]}"
-do 
+do
     # Check if excluded.
-    if [[ ${exclude_collections_array[@]} =~ $collection ]]; then continue; fi
+    if [[ ",${mi_collections_exclude}," =~ ",${collection}," ]]; then continue; fi
 
     # Import each specified collection.
     if [[ $mi_verbose = 'true' ]]; then

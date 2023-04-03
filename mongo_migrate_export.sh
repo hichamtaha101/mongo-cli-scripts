@@ -109,7 +109,7 @@ else
   IFS=',' read -r -a collections_array <<< $me_collections
 fi
 
-me_collections_dir=${script_dir}/collections/${me_project_to}/${me_database_from}/$( date "+%Y-%m-%d:%H:%M:%S" )
+me_collections_dir=${script_dir}/collections/${me_project_to}/${me_database_from}/$( date "+%Y-%m-%dT%H:%M:%S" )
 me_latest_dir=${script_dir}/collections/${me_project_to}/${me_database_from}/latest
 
 echo "Export Details
@@ -133,12 +133,12 @@ fi
 mkdir -p ${me_collections_dir}
 rm -rf ${me_latest_dir}
 mkdir -p ${me_latest_dir}
-me_log_file=$( date "+%Y-%m-%d:%H:%M:%S" )_mongo_migrate_export_logs.txt
+me_log_file=$( date "+%Y-%m-%dT%H:%M:%S" )_mongo_migrate_export_logs.txt
 echo "" > ${script_dir}/logs/${me_log_file} # Empties log.
 for collection in "${collections_array[@]}"
 do
   # Check if excluded.
-  if [[ ${exclude_collections_array[@]} =~ $collection ]]; then continue; fi
+  if [[ ",${me_collections_exclude}," =~ ",${collection}," ]]; then continue; fi
 
   if [[ $me_verbose = 'true' ]]; then
     mongo_export $me_project_to $me_database_from $collection $me_collections_dir 2>&1 | tee -a ${script_dir}/logs/${me_log_file}
